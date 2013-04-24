@@ -1,0 +1,17 @@
+
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+         <editor
+	         name = "MySketchEditor"
+	         extensions = "sk"
+	         contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
+	         class="sketchPlugin.editors.SketchTextEditor"
+	         id="sketchPlugin.editors.myTextEditor">
+         </editor>
+   </extension>
+   
+   
+
+</plugin>
