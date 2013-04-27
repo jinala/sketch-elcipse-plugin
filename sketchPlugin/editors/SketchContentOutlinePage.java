@@ -201,9 +201,7 @@ public class SketchContentOutlinePage extends ContentOutlinePage {
 		fTextEditor= editor;
 	}
 
-	/* (non-Javadoc)
-	 * Method declared on ContentOutlinePage
-	 */
+	
 	public void createControl(Composite parent) {
 
 		super.createControl(parent);
@@ -217,9 +215,7 @@ public class SketchContentOutlinePage extends ContentOutlinePage {
 			viewer.setInput(fInput);
 	}
 
-	/* (non-Javadoc)
-	 * Method declared on ContentOutlinePage
-	 */
+	
 	public void selectionChanged(SelectionChangedEvent event) {
 
 		super.selectionChanged(event);
