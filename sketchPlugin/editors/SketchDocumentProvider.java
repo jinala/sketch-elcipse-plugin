@@ -1,7 +1,6 @@
 package sketchPlugin.editors;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.IDocumentPartitioner;
@@ -23,9 +22,7 @@ public class SketchDocumentProvider extends FileDocumentProvider {
 			partitioner.connect(document);
 			document.setDocumentPartitioner(partitioner);
 			for(ITypedRegion i : partitioner.computePartitioning(0, 1000)){
-				if(i.getType().equals("__function")){
-					
-				}
+				//System.out.println(i);
 			}
 			
 			

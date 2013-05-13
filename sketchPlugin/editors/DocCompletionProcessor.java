@@ -8,39 +8,38 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 
 public class DocCompletionProcessor implements IContentAssistProcessor {
 
-	@Override
+	
 	public ICompletionProposal[] computeCompletionProposals(ITextViewer arg0,
 			int arg1) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+	
 	public IContextInformation[] computeContextInformation(ITextViewer arg0,
 			int arg1) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public char[] getCompletionProposalAutoActivationCharacters() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+	
 	public char[] getContextInformationAutoActivationCharacters() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+	
 	public IContextInformationValidator getContextInformationValidator() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+
 	public String getErrorMessage() {
 		// TODO Auto-generated method stub
 		return null;

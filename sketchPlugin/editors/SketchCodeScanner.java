@@ -1,9 +1,5 @@
 package sketchPlugin.editors;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,11 +7,11 @@ import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.rules.EndOfLineRule;
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IRule;
+import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
-import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 import org.eclipse.swt.SWT;
@@ -30,12 +26,12 @@ public class SketchCodeScanner extends RuleBasedScanner {
 
 	static class TextWords implements IWordDetector {
 
-		@Override
+
 		public boolean isWordStart(char c) {
 			return c == '?' || Character.isLetter(c);
 		}
 
-		@Override
+		
 		public boolean isWordPart(char c) {
 			return c == '?' || Character.isLetter(c);
 		}

@@ -13,8 +13,6 @@ import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
-
-
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 public class SketchTextEditor extends TextEditor {

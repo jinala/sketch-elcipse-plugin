@@ -1,13 +1,9 @@
 package sketchPlugin.editors;
 
 
-import java.util.Arrays;
-
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.MultiLineRule;
-import org.eclipse.jface.text.rules.PatternRule;
-import org.eclipse.jface.text.rules.Token;
 
 public class StructRule extends MultiLineRule {
 	

@@ -1,6 +1,11 @@
 package sketchPlugin.editors;
 
-import java.text.MessageFormat;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,29 +25,22 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
+import antlr.RecognitionException;
+import antlr.TokenStream;
+import antlr.TokenStreamException;
+
+import sketch.compiler.ast.core.Function;
+import sketch.compiler.parser.StreamItLex;
+import sketch.compiler.parser.StreamItParserFE;
+
+
 public class SketchContentOutlinePage extends ContentOutlinePage {
 
-	/**
-	 * A segment element.
-	 */
-	protected static class Segment {
-		public String name;
-		public Position position;
-
-		public Segment(String name, Position position) {
-			this.name= name;
-			this.position= position;
-		}
-
-		public String toString() {
-			return name;
-		}
-	}
+	
 
 	/**
 	 * Divides the editor's document into function segments
@@ -53,21 +51,24 @@ public class SketchContentOutlinePage extends ContentOutlinePage {
 		protected IPositionUpdater fPositionUpdater= new DefaultPositionUpdater(SEGMENTS);
 		protected List fContent= new ArrayList();
 
-		protected void parse(IDocument document) throws BadLocationException {
+		protected void parse(IDocument document) throws BadLocationException, UnsupportedEncodingException {
 			int l = document.getLength();
-			//System.out.println(l);
+		
 
 			for (ITypedRegion i : document.computePartitioning(0, l)) {
-
+				System.out.println(i);
 				try {
 					if(i.getType().equals("__function")){
 						int offset= i.getOffset();
 						int length= i.getLength();		
 						String function = document.get(offset, length);
 						String name = getName(function);
+						
+						Segment f = getFuncTree(function,offset,length,document);
+						
 						Position p= new Position(offset, length);
 						document.addPosition(SEGMENTS, p);
-						fContent.add(new Segment("Function: "+name, p)); 
+						fContent.add(f); 
 					}else if (i.getType().equals("__struct")){
 						int offset = i.getOffset();
 						int length = i.getLength();
@@ -76,14 +77,35 @@ public class SketchContentOutlinePage extends ContentOutlinePage {
 						Position p = new Position(offset, length);
 						document.addPosition(SEGMENTS,p);
 						fContent.add(new Segment("Struct: "+name,p));
+						
 					}
 
 				} catch (BadPositionCategoryException x) {
 				} catch (BadLocationException x) {
+				} catch (RecognitionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (TokenStreamException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}
+		private Segment getFuncTree(String function, int offset,int length,IDocument document) throws UnsupportedEncodingException, RecognitionException, TokenStreamException{
+			
+			//System.out.println("function to parse: [" + function + "]");
+			Reader r = new StringReader(function);
+			
+			StreamItLex lex = new StreamItLex(r);
+			StreamItParserFE parser = new StreamItParserFE(lex, null, false, null);
+			Function f = parser.function_decl();
+			TreeBuilder func = new TreeBuilder(document,offset,length);
+			return func.visitFunction(f,null);
+			
+			
+		}
 
+		
 		private String getName(String function) {
 
 			String[]  split = function.split("[ (){}\n\t\r]");
@@ -118,12 +140,14 @@ public class SketchContentOutlinePage extends ContentOutlinePage {
 				if (document != null) {
 					try {
 						document.removePositionCategory(SEGMENTS);
+				
 					} catch (BadPositionCategoryException x) {
 					}
 					document.removePositionUpdater(fPositionUpdater);
 				}
 			}
-
+			List temp = new ArrayList();
+			temp.addAll(fContent);
 			fContent.clear();
 
 			if (newInput != null) {
@@ -134,10 +158,18 @@ public class SketchContentOutlinePage extends ContentOutlinePage {
 
 					try {
 						parse(document);
-					} catch (BadLocationException e) {
+					} catch(java.lang.NullPointerException e){
+						fContent.clear();
+						fContent.addAll(temp);
+					
+					}
+					catch (BadLocationException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					}
+					} catch (UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
 				}
 			}
 		}
@@ -163,15 +195,26 @@ public class SketchContentOutlinePage extends ContentOutlinePage {
 		 * @see ITreeContentProvider#hasChildren(Object)
 		 */
 		public boolean hasChildren(Object element) {
-			return element == fInput;
+			if(element == fInput){
+				return true;
+			}else if(element instanceof Segment){
+				return ((Segment)element).getChildren().size()>0;
+			}else{
+				return false;
+			}
 		}
 
 		/*
 		 * @see ITreeContentProvider#getParent(Object)
 		 */
 		public Object getParent(Object element) {
-			if (element instanceof Segment)
-				return fInput;
+			if (element instanceof Segment){
+				if(((Segment)element).getParent()!=null){
+					return ((Segment)element).getParent();
+				}else{
+					return fInput;
+				}
+			}
 			return null;
 		}
 
@@ -181,6 +224,9 @@ public class SketchContentOutlinePage extends ContentOutlinePage {
 		public Object[] getChildren(Object element) {
 			if (element == fInput)
 				return fContent.toArray();
+			else if(element instanceof Segment){
+				return ((Segment)element).getChildren().toArray();
+			}
 			return new Object[0];
 		}
 	}
@@ -199,6 +245,7 @@ public class SketchContentOutlinePage extends ContentOutlinePage {
 		super();
 		fDocumentProvider= provider;
 		fTextEditor= editor;
+		
 	}
 
 	
@@ -256,7 +303,7 @@ public class SketchContentOutlinePage extends ContentOutlinePage {
 			if (control != null && !control.isDisposed()) {
 				control.setRedraw(false);
 				viewer.setInput(fInput);
-				viewer.expandAll();
+				
 				control.setRedraw(true);
 			}
 		}

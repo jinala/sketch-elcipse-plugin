@@ -16,8 +16,6 @@ import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 import org.eclipse.swt.SWT;
 
-import sketchPlugin.editors.SketchCodeScanner.TextWords;
-
 public class FunctionScanner extends RuleBasedScanner {
 	private static String[] fgKeywords= {"atomic","fork","insert", "into","loop","repeat","struct","minrepeat","new","reorder","template","ref","if","else","while","for","switch","case","default","break","do","continue","return","parfor","until","by","implements","assert","asset_max","h_assert","generator","harness","model","library","printfcn","device","global","serial","spmdfork","stencil","include","pragma","package"  }; 
 
@@ -27,12 +25,12 @@ public class FunctionScanner extends RuleBasedScanner {
 
 	static class TextWords implements IWordDetector {
 
-		@Override
+		
 		public boolean isWordStart(char c) {
 			return c == '?' || Character.isLetter(c);
 		}
 
-		@Override
+		
 		public boolean isWordPart(char c) {
 			return c == '?' || Character.isLetter(c);
 		}

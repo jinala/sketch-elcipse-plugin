@@ -1,11 +1,5 @@
 package sketchPlugin.editors;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-
-import org.eclipse.core.internal.jobs.JobMessages;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ContextInformation;
@@ -20,7 +14,7 @@ public class CompletionProcessor implements IContentAssistProcessor {
 	private ICompletionProposal[] NO_COMPLETIONS ={};
 	private String[] fgProposals={"void"};
 
-	@Override
+	
 	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer,
 			int offset) {
 		ICompletionProposal[] result = new ICompletionProposal[fgProposals.length];
@@ -35,9 +29,8 @@ public class CompletionProcessor implements IContentAssistProcessor {
 	}
 	/**
 	 * 
+	 * 
 	 * */
-
-	@Override
 	public IContextInformation[] computeContextInformation(ITextViewer viewer,
 			int offset) {
 		IContextInformation[] result = new IContextInformation[5];
@@ -46,23 +39,23 @@ public class CompletionProcessor implements IContentAssistProcessor {
 		return result;
 	}
 
-	@Override
+	
 	public char[] getCompletionProposalAutoActivationCharacters() {
 		return PROPOSAL_ACTIVATION_CHARS;
 	}
 
-	@Override
+	
 	public char[] getContextInformationAutoActivationCharacters() {
 		return new char[] {'#'};
 	}
 
-	@Override
+
 	public IContextInformationValidator getContextInformationValidator() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+
 	public String getErrorMessage() {
 		// TODO Auto-generated method stub
 		return null;
