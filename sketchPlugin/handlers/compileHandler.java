@@ -1,6 +1,7 @@
 package sketchPlugin.handlers;
 
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -42,70 +43,71 @@ public class compileHandler extends AbstractHandler {
 		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
 		IWorkbenchPage page = window.getActivePage();
 		IEditorPart editor = 
-		        page == null ? null : page.getActiveEditor();
+				page == null ? null : page.getActiveEditor();
 		IEditorInput input = 
-		        editor == null ? null : editor.getEditorInput();
+				editor == null ? null : editor.getEditorInput();
 		IPath path = input instanceof FileEditorInput 
-		        ? ((FileEditorInput)input).getPath()
-		        : null;
-		//System.out.println(path.toString());
+				? ((FileEditorInput)input).getPath()
+						: null;
+				IPath pathToFolder = path.removeLastSegments(1);
+			//	System.out.println(pathToFolder.toString());
 
-		MessageConsole myConsole = findConsole("Sketch Console");
-		myConsole.clearConsole();
-		
-		   MessageConsoleStream out = myConsole.newMessageStream();
-		 
+				MessageConsole myConsole = findConsole("Sketch Console");
+				myConsole.clearConsole();
 
-		   System.setOut(new PrintStream(out));
-		   System.setErr(new PrintStream(out));
-		   System.out.println("Hello");
-		   
-		  
-		   System.out.println("SKETCH version features: tprint, cuda-model, vlarrays");
-	       // long beg = System.currentTimeMillis();
-	        
-	        // TODO -- change class names so this is clear
-	        SequentialSketchMain sketchmain = new SequentialSketchMain(new String[]{"-P","preproc",path.toString()});
-	        try {
-	            sketchmain.run();
-	        } catch (SketchException e) {
-	            e.printStackTrace(new PrintStream(out));
-	            
-	        } catch (java.lang.Error e) {
-	          e.printStackTrace(new PrintStream(out));
-	            
-	        } catch (RuntimeException e) {
-	            e.printStackTrace(new PrintStream(out));
-	            
-	        }
-	      //  out.println("Total time = " + (System.currentTimeMillis() - beg));
-		   
-		   
-		   IConsole console = myConsole;
-		   
-		   
-		   String id = IConsoleConstants.ID_CONSOLE_VIEW;
-		   IConsoleView view;
-		try {
-			view = (IConsoleView) page.showView(id);
-			view.display(console);
-		} catch (PartInitException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		   
-		return null;
+				MessageConsoleStream out = myConsole.newMessageStream();
+
+
+				//System.setOut(new PrintStream(out));
+				//System.setErr(new PrintStream(out));
+				System.out.println("Hello");
+
+
+				System.out.println("SKETCH version features: tprint, cuda-model, vlarrays");
+				// long beg = System.currentTimeMillis();
+
+				// TODO -- change class names so this is clear
+				SequentialSketchMain sketchmain = new SequentialSketchMain(new String[]{"-P","preproc",path.toString()});
+				try {
+					sketchmain.run();
+				} catch (SketchException e) {
+					e.printStackTrace();
+
+				} catch (java.lang.Error e) {
+					e.printStackTrace();
+
+				} catch (RuntimeException e) {
+					e.printStackTrace();
+
+				}
+				//  out.println("Total time = " + (System.currentTimeMillis() - beg));
+
+
+				IConsole console = myConsole;
+
+
+				String id = IConsoleConstants.ID_CONSOLE_VIEW;
+				IConsoleView view;
+				try {
+					view = (IConsoleView) page.showView(id);
+					view.display(console);
+				} catch (PartInitException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				return null;
 	}
 	private MessageConsole findConsole(String name) {
-	      ConsolePlugin plugin = ConsolePlugin.getDefault();
-	      IConsoleManager conMan = plugin.getConsoleManager();
-	      IConsole[] existing = conMan.getConsoles();
-	      for (int i = 0; i < existing.length; i++)
-	         if (name.equals(existing[i].getName()))
-	            return (MessageConsole) existing[i];
-	      //no console found, so create a new one
-	      MessageConsole myConsole = new MessageConsole(name, null);
-	      conMan.addConsoles(new IConsole[]{myConsole});
-	      return myConsole;
-	   }
+		ConsolePlugin plugin = ConsolePlugin.getDefault();
+		IConsoleManager conMan = plugin.getConsoleManager();
+		IConsole[] existing = conMan.getConsoles();
+		for (int i = 0; i < existing.length; i++)
+			if (name.equals(existing[i].getName()))
+				return (MessageConsole) existing[i];
+		//no console found, so create a new one
+		MessageConsole myConsole = new MessageConsole(name, null);
+		conMan.addConsoles(new IConsole[]{myConsole});
+		return myConsole;
+	}
 }

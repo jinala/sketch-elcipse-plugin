@@ -13,9 +13,11 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.DefaultPositionUpdater;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.IPositionUpdater;
 import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -52,11 +54,17 @@ public class SketchContentOutlinePage extends ContentOutlinePage {
 		protected List fContent= new ArrayList();
 
 		protected void parse(IDocument document) throws BadLocationException, UnsupportedEncodingException {
+			IDocumentPartitioner partitioner =
+					new FastPartitioner(
+						new SketchPartitionScanner(document),
+						SketchPartitionScanner.SKETCH_PARTITION_TYPES);
+				partitioner.connect(document);
+				document.setDocumentPartitioner(partitioner);
 			int l = document.getLength();
 		
 
 			for (ITypedRegion i : document.computePartitioning(0, l)) {
-				System.out.println(i);
+				//System.out.println(i);
 				try {
 					if(i.getType().equals("__function")){
 						int offset= i.getOffset();
@@ -98,6 +106,7 @@ public class SketchContentOutlinePage extends ContentOutlinePage {
 			
 			StreamItLex lex = new StreamItLex(r);
 			StreamItParserFE parser = new StreamItParserFE(lex, null, false, null);
+			parser.setFilename("test");
 			Function f = parser.function_decl();
 			TreeBuilder func = new TreeBuilder(document,offset,length);
 			return func.visitFunction(f,null);
@@ -151,6 +160,7 @@ public class SketchContentOutlinePage extends ContentOutlinePage {
 			fContent.clear();
 
 			if (newInput != null) {
+				//System.out.println(newInput);
 				IDocument document= fDocumentProvider.getDocument(newInput);
 				if (document != null) {
 					document.addPositionCategory(SEGMENTS);
@@ -161,6 +171,7 @@ public class SketchContentOutlinePage extends ContentOutlinePage {
 					} catch(java.lang.NullPointerException e){
 						fContent.clear();
 						fContent.addAll(temp);
+						e.printStackTrace();
 					
 					}
 					catch (BadLocationException e) {

@@ -13,7 +13,7 @@ import org.eclipse.ui.editors.text.FileDocumentProvider;
 public class SketchDocumentProvider extends FileDocumentProvider {
 	protected IDocument createDocument(Object element) throws CoreException {
 		IDocument document = super.createDocument(element);
-		IDocumentExtension3 docExtension = (IDocumentExtension3) document;
+		
 		if (document != null) {
 			IDocumentPartitioner partitioner =
 				new FastPartitioner(

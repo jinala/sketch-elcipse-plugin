@@ -76,7 +76,7 @@ public class FunctionScanner extends RuleBasedScanner {
 		rules.add(new SingleLineRule("\"", "\"", stringToken, '\\')); 
 		rules.add(new SingleLineRule("'", "'", stringToken, '\\')); 
 		rules.add(new OptionalParameterRule(optionalParameterToken));
-		rules.add(new MultiLineRule("[|","|]",regexToken,'\\'));
+		rules.add(new MultiLineRule("{|","|}",regexToken,'\\'));
 
 		// Add generic whitespace rule.
 		rules.add(new WhitespaceRule(new SketchWhitespaceDetector()));
