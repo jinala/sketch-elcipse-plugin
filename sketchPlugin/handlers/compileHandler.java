@@ -58,8 +58,8 @@ public class compileHandler extends AbstractHandler {
 				MessageConsoleStream out = myConsole.newMessageStream();
 
 
-				//System.setOut(new PrintStream(out));
-				//System.setErr(new PrintStream(out));
+				System.setOut(new PrintStream(out));
+				System.setErr(new PrintStream(out));
 				System.out.println("Hello");
 
 
@@ -67,17 +67,17 @@ public class compileHandler extends AbstractHandler {
 				// long beg = System.currentTimeMillis();
 
 				// TODO -- change class names so this is clear
-				SequentialSketchMain sketchmain = new SequentialSketchMain(new String[]{"-P","preproc",path.toString()});
+				SequentialSketchMain sketchmain = new SequentialSketchMain(new String[]{"--fe-inc",pathToFolder.toString(),path.toString()});
 				try {
 					sketchmain.run();
 				} catch (SketchException e) {
-					e.printStackTrace();
+					e.printStackTrace(new PrintStream(out));
 
 				} catch (java.lang.Error e) {
-					e.printStackTrace();
+					e.printStackTrace(new PrintStream(out));
 
 				} catch (RuntimeException e) {
-					e.printStackTrace();
+					e.printStackTrace(new PrintStream(out));
 
 				}
 				//  out.println("Total time = " + (System.currentTimeMillis() - beg));
